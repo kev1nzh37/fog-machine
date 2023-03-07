@@ -8,7 +8,7 @@ import { CustomProvider } from "rsuite";
 import { useTranslation } from "react-i18next";
 import HelpHome from "./help/Home";
 import Error404 from "./ErrorPage/Error404";
-import Contrast from "./contract/Home";
+import Contrast from "./Contract/Home";
 
 function GithubSsoRedirect() {
   const [searchParams, _] = useSearchParams();

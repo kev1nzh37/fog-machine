@@ -1,7 +1,35 @@
-.time-machine-body {
-  max-width: 768px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 20px;
-  padding-right: 20px;
+.contrast {
+  display: grid;
+  grid-template-columns: calc(50% - 30px) 30px calc(50% - 30px);
+  grid-column-gap: 20px;
+}
+
+.contrast > .contrast__icon {
+  font-size: 30px;
+  width: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.file-box {
+  height: 500px;
+}
+
+.file-box__empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: calc(60% - 12px);
+}
+.file-box-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: calc(35% - 12px);
+}
+.file-box-buttons > span {
+  margin: 12px 0;
 }
