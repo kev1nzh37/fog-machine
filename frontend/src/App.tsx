@@ -8,6 +8,7 @@ import { CustomProvider } from "rsuite";
 import { useTranslation } from "react-i18next";
 import HelpHome from "./help/Home";
 import Error404 from "./ErrorPage/Error404";
+import Contrast from "./contract/Home";
 
 function GithubSsoRedirect() {
   const [searchParams, _] = useSearchParams();
@@ -24,6 +25,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/time-machine" element={<TimeMachineHome />} />
+        <Route path="/contrast" element={<Contrast />} />
         <Route path="/help" element={<HelpHome />} />
         {/* github sso */}
         <Route path="/callback/github" element={<GithubSsoRedirect />} />
