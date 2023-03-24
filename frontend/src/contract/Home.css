@@ -16,12 +16,19 @@
   height: 500px;
 }
 
-.file-box__empty {
+.file-box-content {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   height: calc(60% - 12px);
+}
+.file-box-content > .file-box-content__map {
+  width: 108px;
+}
+.file-box-content > .file-box-content-name > :first-child {
+  font-weight: bold;
+  margin-right: 8px;
 }
 .file-box-buttons {
   display: flex;

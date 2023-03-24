@@ -8,15 +8,15 @@ import {
   Content,
   Divider,
   Stack,
-  IconButton,
+  // IconButton,
 } from "rsuite";
 import EditIcon from "@rsuite/icons/Edit";
 import HistoryIcon from "@rsuite/icons/History";
 import { IconProps } from "@rsuite/icons/lib/Icon";
-import { Icon } from "@rsuite/icons";
+// import { Icon } from "@rsuite/icons";
 import { useTranslation } from "react-i18next";
 import "./Home.css";
-import { FiMoon, FiSun } from "react-icons/fi";
+// import { FiMoon, FiSun } from "react-icons/fi";
 
 function Item(
   title: string,
@@ -90,7 +90,7 @@ function Home(props: {
                 </Button>
               </ButtonGroup>
 
-              <IconButton
+              {/* <IconButton
                 size="lg"
                 icon={
                   props.isDarkTheme ? <Icon as={FiMoon} /> : <Icon as={FiSun} />
@@ -102,7 +102,7 @@ function Home(props: {
                 {props.isDarkTheme
                   ? t("home-theme-dark")
                   : t("home-theme-light")}
-              </IconButton>
+              </IconButton> */}
             </Stack>
           </div>
 

@@ -66,7 +66,7 @@ export type SnapshotUploadResult = {
 
 export default class Api {
   public static readonly backendUrl =
-    process.env.REACT_APP_BACKEND_URL + "/api/v1/";
+    "https://fogmachine-api.8bitsio.com/api/v1/";
   private static readonly tokenKey = "user-token";
 
   private static getToken(): string | null {
