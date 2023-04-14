@@ -8,6 +8,7 @@ import {
   IconButton,
   Panel,
   SelectPicker,
+  Button,
 } from "rsuite";
 import ConversionIcon from "@rsuite/icons/Conversion";
 import PlusIcon from "@rsuite/icons/Plus";
@@ -15,7 +16,7 @@ import emptyIcon from "./empty.png";
 import mapIcon from "./map.svg";
 
 import "./Home.css";
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import Api, { Snapshot } from "../time-machine/Api";
 import moment from "moment";
 
@@ -25,18 +26,25 @@ const Contrast = () => {
   const [snapshotOptions, setSnapshotOptions] = useState<
     { label: string; value: number }[]
   >([]);
+  const [leftSnapshotId, setLeftSnapshotId] = useState<number | null>(null);
+  const [rightSnapshotId, setRightSnapshotd] = useState<number | null>(null);
   const [snapshotList, setSnapshotList] = useState<Snapshot[]>([]);
   const currentPage = 1;
 
   const [isLoading, setIsLoading] = useState(true);
 
-  const FileBox = () => {
-    const [snapshotId, setSnapshotId] = useState<number | null>(null);
-    const [curSnapshot, setCurSnapshot] = useState<Snapshot | null>(null);
+  const FileBox: FC<{
+    snapshotId: number | null;
+    setSnapshotId: (snapshotId: number | null) => void;
+  }> = ({ snapshotId, setSnapshotId }) => {
+    const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
+
     useEffect(() => {
       if (snapshotId) {
-        const curSnapshot = snapshotList.find((item) => item.id === snapshotId);
-        if (curSnapshot) setCurSnapshot(curSnapshot);
+        const cur = snapshotList.find(
+          (snap: Snapshot) => snap.id === snapshotId
+        );
+        if (cur !== undefined) setSnapshot(cur);
       }
     }, [snapshotId]);
 
@@ -44,7 +52,7 @@ const Contrast = () => {
       <Panel shaded bordered bodyFill>
         <div className="file-box">
           <div className="file-box-content">
-            {curSnapshot?.id ? (
+            {snapshot !== null ? (
               <>
                 <img
                   src={mapIcon}
@@ -54,7 +62,7 @@ const Contrast = () => {
                 <div className="file-box-content-name">
                   <span>SnapShot</span>
                   <span>
-                    ({moment(curSnapshot.timestamp).format("YYYY-MM-DD")}))
+                    ({moment(snapshot.timestamp).format("YYYY-MM-DD")}))
                   </span>
                 </div>
               </>
@@ -88,13 +96,33 @@ const Contrast = () => {
       </Panel>
     );
   };
+
+  const contrast = () => {
+    console.log(leftSnapshotId, rightSnapshotId);
+    window.location.href = `http://127.0.0.1:3001/?contrast-snapshot=${leftSnapshotId},${rightSnapshotId}`;
+  };
   const RenderContent = () => (
     <div className="contrast">
-      <FileBox />
-      <div className="contrast__icon">
-        <ConversionIcon />
+      <div className="contrast-content">
+        <FileBox
+          snapshotId={leftSnapshotId}
+          setSnapshotId={setLeftSnapshotId}
+        />
+        <div className="contrast__icon">
+          <ConversionIcon />
+        </div>
+        <FileBox
+          snapshotId={rightSnapshotId}
+          setSnapshotId={setRightSnapshotd}
+        />
       </div>
-      <FileBox />
+      {leftSnapshotId && rightSnapshotId ? (
+        <div className="contrast-buttons">
+          <Button appearance="primary" block onClick={() => contrast()}>
+            Contrast
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 

@@ -7,7 +7,7 @@ import MainMenu from "./MainMenu";
 
 type Props = {
   mapRenderer: MapRenderer;
-  initialSnapshotId: number;
+  initialSnapshotId: number | number[];
   setLoaded(isLoaded: boolean): void;
   msgboxShow(title: string, msg: string): void;
 };
@@ -22,12 +22,8 @@ function Viewer(props: Props): JSX.Element {
   const [snapshotId, setSnapshotId] = useState(props.initialSnapshotId);
   const [snapshotInfo, setSnapshotInfo] = useState<SnapshotInfo | null>(null);
 
-  const loadSnapshot = async () => {
-    console.log("loading snapshot", snapshotId);
-    props.setLoaded(false);
-    // TODO: use react router
-    history.replaceState({}, "", "?viewing-snapshot=" + String(snapshotId));
-    const snapshotInfoRes = await TimeMachineApi.getSnapshotInfo(snapshotId);
+  const initViewingSnapshot = async (id: number) => {
+    const snapshotInfoRes = await TimeMachineApi.getSnapshotInfo(id);
     if (!snapshotInfoRes.ok) {
       console.log(snapshotInfoRes);
       props.msgboxShow("error", "error-failed-to-load-snapshot");
@@ -53,6 +49,68 @@ function Viewer(props: Props): JSX.Element {
     const map = await createMapFromZip(snapshot);
     mapRenderer.replaceFogMap(map);
     setSnapshotInfo(snapshotInfo);
+  };
+
+  const checkSnapshotInCache = async (
+    snapshotInfo: SnapshotInfo
+  ): Promise<ArrayBuffer | undefined> => {
+    let snapshot;
+    if (gloablSnapshotCache[snapshotInfo.id]) {
+      snapshot = gloablSnapshotCache[snapshotInfo.id];
+    } else {
+      const snapshotRes = await TimeMachineApi.downloadSnapshot(
+        snapshotInfo.downloadToken
+      );
+      if (!snapshotRes.ok) {
+        props.msgboxShow("error", "error-failed-to-load-snapshot");
+        return;
+      }
+      snapshot = snapshotRes.ok;
+      gloablSnapshotCache[snapshotInfo.id] = snapshot;
+    }
+    return snapshot;
+  };
+  const initContrastSnapshot = async (id1: number, id2: number) => {
+    const [snapshotInfoRes1, snapshotInfoRes2] = await Promise.all([
+      TimeMachineApi.getSnapshotInfo(id1),
+      TimeMachineApi.getSnapshotInfo(id2),
+    ]);
+    if (!snapshotInfoRes1.ok || !snapshotInfoRes2.ok) {
+      console.log(snapshotInfoRes1, snapshotInfoRes2);
+      props.msgboxShow("error", "error-failed-to-load-snapshot");
+      return;
+    }
+    const [snapshotInfo1, snapshotInfo2] = [
+      snapshotInfoRes1.ok,
+      snapshotInfoRes2.ok,
+    ];
+
+    const [snapshot1, snapshot2] = await Promise.all([
+      checkSnapshotInCache(snapshotInfo1),
+      checkSnapshotInCache(snapshotInfo2),
+    ]);
+
+    if (!snapshot1 || !snapshot2) {
+      console.log("............");
+      return;
+    }
+    let map = await createMapFromZip(snapshot1);
+    map = await createMapFromZip(snapshot2, map);
+
+    mapRenderer.replaceFogMap(map);
+    setSnapshotInfo(snapshotInfo);
+  };
+  const loadSnapshot = async () => {
+    console.log("loading snapshot", snapshotId);
+    props.setLoaded(false);
+    // TODO: use react router
+    history.replaceState({}, "", "?viewing-snapshot=" + String(snapshotId));
+    if (Array.isArray(snapshotId)) {
+      const [snapshotId1, snapshotId2] = snapshotId;
+      initContrastSnapshot(snapshotId1, snapshotId2);
+    } else {
+      initViewingSnapshot(snapshotId);
+    }
     props.setLoaded(true);
   };
 

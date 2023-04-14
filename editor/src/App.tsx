@@ -14,9 +14,10 @@ type ModeProps = {
 };
 function Mode(props: ModeProps) {
   if (!props.mapRenderer) return <></>;
-  const snapshotIdStr = new URL(window.location.href).searchParams.get(
-    "viewing-snapshot"
-  );
+  const searchParams = new URL(window.location.href).searchParams;
+  const snapshotIdStr = searchParams.get("viewing-snapshot");
+  const contrastSnapshotIdStr = searchParams.get("contrast-snapshot");
+
   if (snapshotIdStr) {
     const snapshotId = Number(snapshotIdStr);
     return (
@@ -27,15 +28,26 @@ function Mode(props: ModeProps) {
         msgboxShow={props.msgboxShow}
       />
     );
-  } else {
+  }
+  if (contrastSnapshotIdStr) {
+    const snapshotId = contrastSnapshotIdStr.split(",").map(Number);
     return (
-      <Editor
+      <Viewer
         mapRenderer={props.mapRenderer}
         setLoaded={props.setLoaded}
+        initialSnapshotId={snapshotId}
         msgboxShow={props.msgboxShow}
       />
     );
   }
+
+  return (
+    <Editor
+      mapRenderer={props.mapRenderer}
+      setLoaded={props.setLoaded}
+      msgboxShow={props.msgboxShow}
+    />
+  );
 }
 
 function App(): JSX.Element {

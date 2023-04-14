@@ -1,10 +1,19 @@
-.contrast {
+.contrast-content {
   display: grid;
   grid-template-columns: calc(50% - 30px) 30px calc(50% - 30px);
   grid-column-gap: 20px;
 }
+.contrast-buttons {
+  margin-top: 40px;
+  width: 40%;
+  margin-left: 30%;
+  margin-right: 30%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-.contrast > .contrast__icon {
+.contrast-content > .contrast__icon {
   font-size: 30px;
   width: 30px;
   display: flex;

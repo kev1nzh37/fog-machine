@@ -20,7 +20,10 @@ function getFileExtension(filename: string): string {
   );
 }
 
-export async function createMapFromZip(data: ArrayBuffer): Promise<FogMap> {
+export async function createMapFromZip(
+  data: ArrayBuffer,
+  map: null | FogMap = null
+): Promise<FogMap> {
   const zip = await new JSZip().loadAsync(data);
   const tileFiles = await Promise.all(
     Object.entries(zip.files)
@@ -36,7 +39,7 @@ export async function createMapFromZip(data: ArrayBuffer): Promise<FogMap> {
         return [filename, data] as [string, ArrayBuffer];
       })
   );
-  const map = FogMap.createFromFiles(tileFiles);
+  map = FogMap.createFromFiles(tileFiles);
   return map;
 }
 
